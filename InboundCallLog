@@ -1,0 +1,52 @@
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"bytes"
+	"encoding/json"
+)
+
+type TelephonySession struct {
+	ExtensionID string `json:"extensionId"`
+	// Add other fields from the telephony session API response
+}
+
+type SMSRequest struct {
+	ExtensionID string `json:"extensionId"`
+	PhoneNumber string `json:"phoneNumber"`
+	// Add other fields for the SMS message
+}
+
+func main() {
+	// Replace with your actual accountId
+	accountId := "your-account-id"
+	
+	// Make a request to the telephony session API
+	telephonySessionURL := fmt.Sprintf("/restapi/v1.0/account/%s/telephony/sessions", accountId)
+	// Make the HTTP request and parse the response into a TelephonySession struct
+	
+	// Identify inbound calls and get the extensionID
+	
+	// Create an SMSRequest struct with the extensionID and phone number
+	smsRequest := SMSRequest{
+		ExtensionID: "your-extension-id",
+		PhoneNumber: "+15555551234",
+		// Add other details from the telephony session
+	}
+	
+	// Convert the SMSRequest struct to JSON
+	smsRequestBody, err := json.Marshal(smsRequest)
+	if err != nil {
+		fmt.Println("Error marshaling SMS request:", err)
+		return
+	}
+	
+	// Send the SMS request to the API
+	smsAPIURL := "https://api.ringcentral.com/restapi/v1.0/account/%s/extension/%s/sms"
+	smsAPIURL = fmt.Sprintf(smsAPIURL, accountId, smsRequest.ExtensionID)
+	req, err := http.NewRequest("POST", smsAPIURL, bytes.NewBuffer(smsRequestBody))
+	if err != nil {
+		fmt.Println("Error creating SMS request:", err)
+		return
+	}
